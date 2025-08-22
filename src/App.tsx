@@ -3,7 +3,17 @@ import { Card } from "./components/Card";
 function App() {
   return (
     <>
-      <Card />
+      <div
+        style={{
+          width: "100%",
+          height: "100vh",
+          display: "flex",
+          justifyContent: "center",
+          alignContent: "center",
+        }}
+      >
+        <Card />
+      </div>
     </>
   );
 }
