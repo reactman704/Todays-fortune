@@ -24,6 +24,7 @@ export const Card = () => {
   const [flippedId, setFlippedId] = useState<number | null>(null);
 
   const [isShuffling, setIsShuffling] = useState(false);
+  const [isFirst, setIsFirst] = useState(true);
 
   // 카드 초기 회전 각도
   const anglesRef = useRef(
@@ -62,10 +63,20 @@ export const Card = () => {
   };
 
   const onClicked = () => {
-    setFlippedId(null);
-    setIsAlign(true);
-    setIsShuffling(true); // 셔플 시작
-    onShuffle();
+    setIsShuffling(true);
+    if (isShuffling) return; // 셔플 중에는 무시
+
+    if (isFirst) {
+      setIsAlign(true); // 버튼 누르면 처음에만 정렬
+      setIsFirst(false); // 이제 처음 상태는 종료
+    } else if (isFirst === false) {
+      setFlippedId(-1);
+    }
+
+    setTimeout(() => {
+      setFlippedId(null); // 뒷면으로 되돌리기
+      onShuffle(); // 셔플 시작
+    }, 600); // transition-duration과 동일하게
   };
 
   return (
