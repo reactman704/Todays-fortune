@@ -8,18 +8,62 @@ interface MyCard {
 }
 
 export const Card = () => {
+  // 실제 카드 데이터 (예시: 8장만 작성, 필요 시 54장으로 확장)
   const initialCards: MyCard[] = [
-    { id: 1, front: "첫 번째 카드", back: "첫 번째 카드의 뒷면" },
-    { id: 2, front: "두 번째 카드", back: "두 번째 카드의 뒷면" },
-    { id: 3, front: "세 번째 카드", back: "세 번째 카드의 뒷면" },
-    { id: 4, front: "네 번째 카드", back: "네 번째 카드의 뒷면" },
-    { id: 5, front: "다섯 번째 카드", back: "다섯 번째 카드의 뒷면" },
-    { id: 6, front: "여섯 번째 카드", back: "여섯 번째 카드의 뒷면" },
-    { id: 7, front: "일곱 번째 카드", back: "일곱 번째 카드의 뒷면" },
-    { id: 8, front: "여덟 번째 카드", back: "여덟 번째 카드의 뒷면" },
+    {
+      id: 1,
+      front: "src/assets/Card/test-01.png",
+      back: "src/assets/Card/back-test.png",
+    },
+    {
+      id: 2,
+      front: "src/assets/Card/test-01.png",
+      back: "src/assets/Card/back-test.png",
+    },
+    {
+      id: 3,
+      front: "src/assets/Card/test-01.png",
+      back: "src/assets/Card/back-test.png",
+    },
+    {
+      id: 4,
+      front: "src/assets/Card/test-01.png",
+      back: "src/assets/Card/back-test.png",
+    },
+    {
+      id: 5,
+      front: "src/assets/Card/test-01.png",
+      back: "src/assets/Card/back-test.png",
+    },
+    {
+      id: 6,
+      front: "src/assets/Card/test-01.png",
+      back: "src/assets/Card/back-test.png",
+    },
+    {
+      id: 7,
+      front: "src/assets/Card/test-01.png",
+      back: "src/assets/Card/back-test.png",
+    },
+    {
+      id: 8,
+      front: "src/assets/Card/test-01.png",
+      back: "src/assets/Card/back-test.png",
+    },
   ];
 
-  const [cardsState, setCardsState] = useState<MyCard[]>(initialCards);
+  // 광고 카드
+  const promoCard: MyCard = {
+    id: 0,
+    front: "src/assets/Card/back-test.png", // 광고 이미지
+    back: "src/assets/Card/promo.png",
+  };
+
+  // 초기 state: 광고 카드 + 실제 카드 덱
+  const [cardsState, setCardsState] = useState<MyCard[]>([
+    promoCard,
+    ...initialCards,
+  ]);
   const [isAlign, setIsAlign] = useState(false);
   const [flippedId, setFlippedId] = useState<number | null>(null);
 
@@ -27,7 +71,7 @@ export const Card = () => {
   const [isFirst, setIsFirst] = useState(true);
 
   const anglesRef = useRef(
-    initialCards.map(() => Math.floor(Math.random() * 30 - 15))
+    [...cardsState].map(() => Math.floor(Math.random() * 30 - 15))
   );
 
   const shuffleArray = (array: MyCard[]): MyCard[] => {
@@ -41,7 +85,7 @@ export const Card = () => {
 
   const onShuffle = () => {
     let count = 0;
-    const maxCount = 20;
+    const maxCount = 15;
     const interval = setInterval(() => {
       setCardsState((prev) => {
         const shuffled = shuffleArray(prev);
@@ -56,7 +100,7 @@ export const Card = () => {
         }
         return shuffled;
       });
-    }, 100);
+    }, 150);
   };
 
   const onClicked = () => {
@@ -65,14 +109,23 @@ export const Card = () => {
     if (isFirst) {
       setIsAlign(true);
       setIsFirst(false);
-    } else if (isFirst === false) {
-      setFlippedId(-1);
-    }
 
-    setTimeout(() => {
-      setFlippedId(null);
-      onShuffle();
-    }, 600);
+      // 광고 카드 뒤집기
+      setFlippedId(0);
+
+      // 광고 카드 제거 후 실제 카드 덱 셔플
+      setTimeout(() => {
+        setCardsState((prev) => prev.filter((c) => c.id !== 0));
+        setFlippedId(null); // 광고 카드 뒤집힘 해제
+        onShuffle(); // 실제 카드 셔플 시작
+      }, 800); // 광고 카드 뒤집는 시간과 동일
+    } else {
+      setFlippedId(-1);
+      setTimeout(() => {
+        setFlippedId(null);
+        onShuffle();
+      }, 600);
+    }
   };
 
   return (
@@ -88,16 +141,33 @@ export const Card = () => {
             className={`card ${flippedId === c.id ? "flipped" : ""}`}
             style={{
               transform: `rotate(${isAlign ? 0 : anglesRef.current[index]}deg)`,
-              top: `${index * 5}px`,
-              left: `${index * 5}px`,
+              top: `${index * 1.5}px`,
+              left: `${index * 1.5}px`,
               transition:
                 "transform 0.3s ease-in-out, top 0.3s ease, left 0.3s ease",
               zIndex: cardsState.length - index,
             }}
           >
             <div className="card-inner">
-              <div className="card-front card-child">{c.front}</div>
-              <div className="card-back card-child">{c.back}</div>
+              <div
+                className="card-front card-child"
+                style={{
+                  backgroundImage: `url(${c.front})`,
+                  backgroundPosition: "center center",
+                  backgroundSize: "cover",
+                }}
+              ></div>
+              <div
+                className={`card-back card-child ${
+                  c.id === 0 ? "promo-card" : ""
+                }`}
+                style={{
+                  backgroundColor: c.id === 0 ? "#000" : "#fff", // 광고 카드일 때 배경색
+                  backgroundImage: `url(${c.back})`,
+                  backgroundPosition: "center center",
+                  backgroundSize: "cover",
+                }}
+              ></div>
             </div>
           </div>
         ))}
