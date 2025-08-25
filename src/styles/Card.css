@@ -32,8 +32,13 @@
   transition: transform 0.7s;
 }
 
-.card.flipped .card-inner {
+/* 플립 축에 따라 다른 회전 */
+.card.flipped[data-flip-axis="Y"] .card-inner {
   transform: rotateY(180deg);
+}
+
+.card.flipped[data-flip-axis="X"] .card-inner {
+  transform: rotateX(-180deg);
 }
 
 .card-front,

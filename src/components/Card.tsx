@@ -5,58 +5,73 @@ interface MyCard {
   id: number;
   front: string;
   back: string;
+  part: number;
+  title: string;
+  title02: string;
 }
 
 export const Card = () => {
-  // 실제 카드 데이터 (예시: 8장만 작성, 필요 시 54장으로 확장)
+  // 카드 데이터 (예시: 일부만 작성)
   const initialCards: MyCard[] = [
     {
       id: 1,
       front: "src/assets/Card/test-01.png",
       back: "src/assets/Card/back-test.png",
+      part: 2,
+      title: "컬러 조커",
+      title02: "컬러 조커",
     },
     {
       id: 2,
       front: "src/assets/Card/test-01.png",
       back: "src/assets/Card/back-test.png",
+      part: 2,
+      title: "흑백조커",
+      title02: "흑백조커",
     },
     {
       id: 3,
       front: "src/assets/Card/test-01.png",
       back: "src/assets/Card/back-test.png",
+      part: 2,
+      title: "의심에 면역이 안된 아이",
+      title02: "건강하게 싫어하는 아이",
     },
     {
       id: 4,
       front: "src/assets/Card/test-01.png",
       back: "src/assets/Card/back-test.png",
+      part: 2,
+      title: "3.5차원 가족 누구를 추가할건지, 교체할건지",
+      title02: "3.5차원 가족 누구를 추가할건지, 교체할건지",
     },
     {
       id: 5,
       front: "src/assets/Card/test-01.png",
       back: "src/assets/Card/back-test.png",
+      part: 2,
+      title: "기대감 질문하는 힘",
+      title02: "기대감 질문하는 힘",
     },
     {
       id: 6,
       front: "src/assets/Card/test-01.png",
       back: "src/assets/Card/back-test.png",
-    },
-    {
-      id: 7,
-      front: "src/assets/Card/test-01.png",
-      back: "src/assets/Card/back-test.png",
-    },
-    {
-      id: 8,
-      front: "src/assets/Card/test-01.png",
-      back: "src/assets/Card/back-test.png",
+      part: 2,
+      title: "언제나 틀릴수도 있다는 자신감. 오해 받을 용기",
+      title02: "언제나 틀릴수도 있다는 자신감. 오해 받을 용기",
     },
   ];
 
   // 광고 카드
   const promoCard: MyCard = {
     id: 0,
-    front: "src/assets/Card/back-test.png", // 광고 이미지
+    front: "src/assets/Card/back-test.png",
     back: "src/assets/Card/promo.png",
+
+    part: 1,
+    title: "promo",
+    title02: "promo",
   };
 
   // 초기 state: 광고 카드 + 실제 카드 덱
@@ -66,6 +81,7 @@ export const Card = () => {
   ]);
   const [isAlign, setIsAlign] = useState(false);
   const [flippedId, setFlippedId] = useState<number | null>(null);
+  const [flipAxis, setFlipAxis] = useState<"X" | "Y">("Y");
 
   const [isShuffling, setIsShuffling] = useState(false);
   const [isFirst, setIsFirst] = useState(true);
@@ -74,6 +90,7 @@ export const Card = () => {
     [...cardsState].map(() => Math.floor(Math.random() * 30 - 15))
   );
 
+  // 배열 셔플
   const shuffleArray = (array: MyCard[]): MyCard[] => {
     const newArr = [...array];
     for (let i = newArr.length - 1; i > 0; i--) {
@@ -83,6 +100,7 @@ export const Card = () => {
     return newArr;
   };
 
+  // 카드 셔플
   const onShuffle = () => {
     let count = 0;
     const maxCount = 15;
@@ -93,8 +111,15 @@ export const Card = () => {
         if (count > maxCount) {
           clearInterval(interval);
           setTimeout(() => {
-            setFlippedId(shuffled[0].id); // 셔플 끝나면 맨 위 카드 뒤집기
-            console.log("선택된 카드:", shuffled[0]);
+            const selected = shuffled[0];
+
+            // part == 2 → X/Y 랜덤, 아니면 Y 고정
+            const randomAxis =
+              selected.part === 2 ? (Math.random() > 0.5 ? "Y" : "X") : "Y";
+            setFlipAxis(randomAxis);
+
+            setFlippedId(selected.id);
+            console.log("선택된 카드:", selected);
             setIsShuffling(false);
           }, 500);
         }
@@ -103,6 +128,7 @@ export const Card = () => {
     }, 150);
   };
 
+  // 버튼 클릭
   const onClicked = () => {
     setIsShuffling(true);
 
@@ -110,15 +136,15 @@ export const Card = () => {
       setIsAlign(true);
       setIsFirst(false);
 
-      // 광고 카드 뒤집기
+      // 광고 카드 flip
+      setFlipAxis("Y"); // 광고 카드는 항상 Y축
       setFlippedId(0);
 
-      // 광고 카드 제거 후 실제 카드 덱 셔플
       setTimeout(() => {
         setCardsState((prev) => prev.filter((c) => c.id !== 0));
-        setFlippedId(null); // 광고 카드 뒤집힘 해제
-        onShuffle(); // 실제 카드 셔플 시작
-      }, 800); // 광고 카드 뒤집는 시간과 동일
+        setFlippedId(null);
+        onShuffle();
+      }, 800);
     } else {
       setFlippedId(-1);
       setTimeout(() => {
@@ -139,6 +165,7 @@ export const Card = () => {
           <div
             key={c.id}
             className={`card ${flippedId === c.id ? "flipped" : ""}`}
+            data-flip-axis={flipAxis}
             style={{
               transform: `rotate(${isAlign ? 0 : anglesRef.current[index]}deg)`,
               top: `${index * 1.5}px`,
@@ -162,7 +189,7 @@ export const Card = () => {
                   c.id === 0 ? "promo-card" : ""
                 }`}
                 style={{
-                  backgroundColor: c.id === 0 ? "#000" : "#fff", // 광고 카드일 때 배경색
+                  backgroundColor: c.id === 0 ? "#000" : "#fff",
                   backgroundImage: `url(${c.back})`,
                   backgroundPosition: "center center",
                   backgroundSize: "cover",
