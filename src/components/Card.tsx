@@ -1,94 +1,64 @@
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import "../styles/Card.css";
+import axios from "axios";
 
 interface MyCard {
-  id: number;
+  id: string;
   front: string;
   back: string;
-  part: number;
+  part: string;
   title: string;
   title02: string;
+  keyword: string;
+  desc01: string;
+  desc02: string;
 }
 
+// 광고 카드
+const promoCard: MyCard = {
+  id: "0",
+  front: "/assets/Card/back-test.png",
+  back: "/assets/Card/promo.png",
+  part: "1",
+  title: "promo",
+  title02: "promo",
+  keyword: "안녕",
+  desc01: "desc01",
+  desc02: "desc02",
+};
+
 export const Card = () => {
-  // 카드 데이터 (예시: 일부만 작성)
-  const initialCards: MyCard[] = [
-    {
-      id: 1,
-      front: "/assets/Card/test-01.png",
-      back: "/assets/Card/back-test.png",
-      part: 2,
-      title: "컬러 조커",
-      title02: "컬러 조커",
-    },
-    {
-      id: 2,
-      front: "/assets/Card/test-01.png",
-      back: "/assets/Card/back-test.png",
-      part: 2,
-      title: "흑백조커",
-      title02: "흑백조커",
-    },
-    {
-      id: 3,
-      front: "/assets/Card/test-01.png",
-      back: "/assets/Card/back-test.png",
-      part: 2,
-      title: "의심에 면역이 안된 아이",
-      title02: "건강하게 싫어하는 아이",
-    },
-    {
-      id: 4,
-      front: "/assets/Card/test-01.png",
-      back: "/assets/Card/back-test.png",
-      part: 2,
-      title: "3.5차원 가족 누구를 추가할건지, 교체할건지",
-      title02: "3.5차원 가족 누구를 추가할건지, 교체할건지",
-    },
-    {
-      id: 5,
-      front: "/assets/Card/test-01.png",
-      back: "/assets/Card/back-test.png",
-      part: 2,
-      title: "기대감 질문하는 힘",
-      title02: "기대감 질문하는 힘",
-    },
-    {
-      id: 6,
-      front: "/assets/Card/test-01.png",
-      back: "/assets/Card/back-test.png",
-      part: 2,
-      title: "언제나 틀릴수도 있다는 자신감. 오해 받을 용기",
-      title02: "언제나 틀릴수도 있다는 자신감. 오해 받을 용기",
-    },
-  ];
-
-  // 광고 카드
-  const promoCard: MyCard = {
-    id: 0,
-    front: "/assets/Card/back-test.png",
-    back: "/assets/Card/promo.png",
-
-    part: 1,
-    title: "promo",
-    title02: "promo",
-  };
-
-  // 초기 state: 광고 카드 + 실제 카드 덱
-  const [cardsState, setCardsState] = useState<MyCard[]>([
-    promoCard,
-    ...initialCards,
-  ]);
+  const [cardsState, setCardsState] = useState<MyCard[]>([promoCard]);
   const [isAlign, setIsAlign] = useState(false);
-  const [flippedId, setFlippedId] = useState<number | null>(null);
+  const [flippedId, setFlippedId] = useState<string | null>(null);
   const [flipAxis, setFlipAxis] = useState<"X" | "Y">("Y");
-
+  const [currentAxis, setCurrentAxis] = useState<"X" | "Y">("Y"); // ✅ 추가
   const [isShuffling, setIsShuffling] = useState(false);
   const [isFirst, setIsFirst] = useState(true);
 
-  const anglesRef = useRef(
-    [...cardsState].map(() => Math.floor(Math.random() * 30 - 15))
-  );
+  const anglesRef = useRef<number[]>([]);
+
+  // ✅ axios로 외부 데이터 가져오기
+  useEffect(() => {
+    const fetchCards = async () => {
+      try {
+        const url =
+          "https://gist.githubusercontent.com/reactman704/6aa8eae1e67924ef1051c55558763c5f/raw/035bdb931b62f5c288635144fa25f6b0bf990497/Today-Question.json";
+        const response = await axios.get<MyCard[]>(url);
+        console.log(response.data);
+        // 랜덤 각도 초기화
+        anglesRef.current = response.data.map(() =>
+          Math.floor(Math.random() * 20 - 10)
+        );
+
+        setCardsState(response.data);
+      } catch (error) {
+        console.error("카드 데이터를 가져오는 중 오류 발생:", error);
+      }
+    };
+
+    fetchCards();
+  }, []);
 
   // 배열 셔플
   const shuffleArray = (array: MyCard[]): MyCard[] => {
@@ -113,14 +83,16 @@ export const Card = () => {
           setTimeout(() => {
             const selected = shuffled[0];
 
-            // part == 2 → X/Y 랜덤, 아니면 Y 고정
+            // part === "2"이면 X/Y 랜덤, 아니면 Y 고정
             const randomAxis =
-              selected.part === 2 ? (Math.random() > 0.5 ? "Y" : "X") : "Y";
-            setFlipAxis(randomAxis);
+              selected.part === "2" ? (Math.random() > 0.5 ? "Y" : "X") : "Y";
 
+            setFlipAxis(randomAxis);
+            setCurrentAxis(randomAxis); // ✅ 현재 선택된 axis 저장
             setFlippedId(selected.id);
-            console.log("선택된 카드:", selected);
             setIsShuffling(false);
+
+            console.log("선택된 카드:", selected, "Axis:", randomAxis);
           }, 500);
         }
         return shuffled;
@@ -135,18 +107,17 @@ export const Card = () => {
     if (isFirst) {
       setIsAlign(true);
       setIsFirst(false);
-
-      // 광고 카드 flip
-      setFlipAxis("Y"); // 광고 카드는 항상 Y축
-      setFlippedId(0);
+      setFlipAxis("Y");
+      setCurrentAxis("Y");
+      setFlippedId("0");
 
       setTimeout(() => {
-        setCardsState((prev) => prev.filter((c) => c.id !== 0));
+        setCardsState((prev) => prev.filter((c) => c.id !== "0"));
         setFlippedId(null);
         onShuffle();
-      }, 800);
+      }, 600);
     } else {
-      setFlippedId(-1);
+      setFlippedId("-1");
       setTimeout(() => {
         setFlippedId(null);
         onShuffle();
@@ -154,12 +125,13 @@ export const Card = () => {
     }
   };
 
+  const flippedCard = cardsState.find(
+    (c) => c.id === flippedId && parseInt(flippedId!) > 0
+  );
+
   return (
     <div className="card-wrap">
-      <button onClick={onClicked} disabled={isShuffling}>
-        오늘의 운세 확인
-      </button>
-
+      <div></div>
       <div className="card-stack">
         {cardsState.map((c, index) => (
           <div
@@ -168,8 +140,8 @@ export const Card = () => {
             data-flip-axis={flipAxis}
             style={{
               transform: `rotate(${isAlign ? 0 : anglesRef.current[index]}deg)`,
-              top: `${index * 1.5}px`,
-              left: `${index * 1.5}px`,
+              top: `${index * 0.3}px`,
+              left: `${index * 0.3}px`,
               transition:
                 "transform 0.3s ease-in-out, top 0.3s ease, left 0.3s ease",
               zIndex: cardsState.length - index,
@@ -186,10 +158,10 @@ export const Card = () => {
               ></div>
               <div
                 className={`card-back card-child ${
-                  c.id === 0 ? "promo-card" : ""
+                  c.id === "0" ? "promo-card" : ""
                 }`}
                 style={{
-                  backgroundColor: c.id === 0 ? "#000" : "#fff",
+                  backgroundColor: c.id === "0" ? "#000" : "#fff",
                   backgroundImage: `url(${c.back})`,
                   backgroundPosition: "center center",
                   backgroundSize: "cover",
@@ -199,6 +171,27 @@ export const Card = () => {
           </div>
         ))}
       </div>
+
+      {/* 뒤집힌 카드 정보 출력 */}
+      <div className="card-info">
+        {flippedCard ? (
+          <div>
+            <div>
+              {currentAxis === "X" ? flippedCard.title02 : flippedCard.title}
+            </div>
+            <div>{flippedCard.keyword}</div>
+            <div>
+              {currentAxis === "X" ? flippedCard.desc02 : flippedCard.desc01}
+            </div>
+          </div>
+        ) : (
+          <p>카드를 뒤집어 보세요!</p>
+        )}
+      </div>
+
+      <button onClick={onClicked} disabled={isShuffling}>
+        오늘의 운세 확인
+      </button>
     </div>
   );
 };
