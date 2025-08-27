@@ -32,13 +32,12 @@ export const Card = () => {
   const [isAlign, setIsAlign] = useState(false);
   const [flippedId, setFlippedId] = useState<string | null>(null);
   const [flipAxis, setFlipAxis] = useState<"X" | "Y">("Y");
-  const [currentAxis, setCurrentAxis] = useState<"X" | "Y">("Y"); // ✅ 추가
+  const [currentAxis, setCurrentAxis] = useState<"X" | "Y">("Y");
   const [isShuffling, setIsShuffling] = useState(false);
   const [isFirst, setIsFirst] = useState(true);
 
   const anglesRef = useRef<number[]>([]);
 
-  // ✅ axios로 외부 데이터 가져오기
   useEffect(() => {
     const fetchCards = async () => {
       try {
@@ -83,12 +82,11 @@ export const Card = () => {
           setTimeout(() => {
             const selected = shuffled[0];
 
-            // part === "2"이면 X/Y 랜덤, 아니면 Y 고정
             const randomAxis =
               selected.part === "2" ? (Math.random() > 0.5 ? "Y" : "X") : "Y";
 
             setFlipAxis(randomAxis);
-            setCurrentAxis(randomAxis); // ✅ 현재 선택된 axis 저장
+            setCurrentAxis(randomAxis);
             setFlippedId(selected.id);
             setIsShuffling(false);
 
@@ -172,7 +170,6 @@ export const Card = () => {
         ))}
       </div>
 
-      {/* 뒤집힌 카드 정보 출력 */}
       <div className="card-info">
         {flippedCard ? (
           <div>
