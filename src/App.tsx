@@ -1,17 +1,11 @@
 import { Card } from "./components/Card";
+import { Headrer } from "./components/Header";
 
 function App() {
   return (
     <>
-      <div
-        style={{
-          width: "100%",
-          height: "100vh",
-          display: "flex",
-          justifyContent: "center",
-          alignContent: "center",
-        }}
-      >
+      <div>
+        <Headrer />
         <Card />
       </div>
     </>

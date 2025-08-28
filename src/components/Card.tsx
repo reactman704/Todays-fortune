@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import "../styles/Card.css";
 import axios from "axios";
+import FortuneButton from "./FortuneButton";
 
 interface MyCard {
   id: string;
@@ -159,7 +160,7 @@ export const Card = () => {
                   c.id === "0" ? "promo-card" : ""
                 }`}
                 style={{
-                  backgroundColor: c.id === "0" ? "#000" : "#fff",
+                  backgroundColor: c.id === "0" ? "#000" : "#fdfdfd",
                   backgroundImage: `url(${c.back})`,
                   backgroundPosition: "center center",
                   backgroundSize: "cover",
@@ -171,7 +172,7 @@ export const Card = () => {
       </div>
 
       <div className="card-info">
-        {flippedCard ? (
+        {flippedCard && !isShuffling ? (
           <div>
             <div>
               {currentAxis === "X" ? flippedCard.title02 : flippedCard.title}
@@ -182,13 +183,11 @@ export const Card = () => {
             </div>
           </div>
         ) : (
-          <p>카드를 뒤집어 보세요!</p>
+          <p>Card Info</p>
         )}
       </div>
 
-      <button onClick={onClicked} disabled={isShuffling}>
-        오늘의 운세 확인
-      </button>
+      <FortuneButton onClick={onClicked} disabled={isShuffling} />
     </div>
   );
 };
