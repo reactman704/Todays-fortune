@@ -1,0 +1,11 @@
+:root {
+  /* main-bg-color */
+  --main-bg-Color: #ff8e3d;
+
+  --primary-font-color: #1a1a1a;
+
+}
+
+body {
+  margin: 0;
+}

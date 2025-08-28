@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from "react";
+import "../styles/common.css";
 import "../styles/Card.css";
 import axios from "axios";
 import FortuneButton from "./FortuneButton";
