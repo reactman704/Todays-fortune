@@ -1,24 +1,26 @@
 import React from "react";
+import { Link } from "react-router-dom";
+import "../styles/reset.css";
 import "../styles/common.css";
 import "../styles/utilities.css";
 import "../styles/NavBar.css";
 
 export const NavBar = () => {
   return (
-    <>
-      <nav>
-        <ul className="nav-wrap flex-center g30">
-          <li>
-            <a href="">Menu</a>
-          </li>
-          <li>
-            <a href="">About</a>
-          </li>
-          <li>
-            <a href="">Social</a>
-          </li>
-        </ul>
-      </nav>
-    </>
+    <nav>
+      <ul className="nav-wrap flex-center g30">
+        <li>
+          <Link to="/">Menu</Link>
+        </li>
+        <li>
+          <Link to="/about">About</Link>
+        </li>
+        <li>
+          <Link to="/contact">Contact</Link>
+        </li>
+      </ul>
+    </nav>
   );
 };
+
+export default NavBar;
