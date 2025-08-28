@@ -45,7 +45,7 @@ export const Card = () => {
         const url =
           "https://gist.githubusercontent.com/reactman704/6aa8eae1e67924ef1051c55558763c5f/raw/035bdb931b62f5c288635144fa25f6b0bf990497/Today-Question.json";
         const response = await axios.get<MyCard[]>(url);
-        console.log(response.data);
+        // console.log(response.data);
         // 랜덤 각도 초기화
         anglesRef.current = response.data.map(() =>
           Math.floor(Math.random() * 20 - 10)
