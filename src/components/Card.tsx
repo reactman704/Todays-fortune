@@ -3,8 +3,9 @@ import "../styles/common.css";
 import "../styles/Card.css";
 import axios from "axios";
 import FortuneButton from "./FortuneButton";
+import { CardInfo } from "./CardInfo";
 
-interface MyCard {
+export interface MyCard {
   id: string;
   front: string;
   back: string;
@@ -173,19 +174,11 @@ export const Card = () => {
       </div>
 
       <div className="card-info">
-        {flippedCard && !isShuffling ? (
-          <div>
-            <div>
-              {currentAxis === "X" ? flippedCard.title02 : flippedCard.title}
-            </div>
-            <div>{flippedCard.keyword}</div>
-            <div>
-              {currentAxis === "X" ? flippedCard.desc02 : flippedCard.desc01}
-            </div>
-          </div>
-        ) : (
-          <p>Card Info</p>
-        )}
+        <CardInfo
+          flippedCard={flippedCard} // MyCard | null 타입
+          isShuffling={isShuffling} // boolean 타입
+          currentAxis={currentAxis} // "X" | "Y" 타입
+        />
       </div>
 
       <FortuneButton onClick={onClicked} disabled={isShuffling} />

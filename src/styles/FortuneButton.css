@@ -1,0 +1,21 @@
+.qa-btn {
+  border: none;
+  background-color: transparent;
+  padding: 20px;
+  border: 1px solid #1a1a1a;
+  box-sizing: border-box;
+  cursor: pointer;
+  transition: .3s;
+  border-radius: 10px;
+}
+
+.qa-btn:hover {
+  background-color: #1a1a1a;
+  color: #ffff;
+}
+
+.qa-btn:disabled {
+  background-color: rgb(36, 36, 36);
+  color: #fff;
+  opacity: .3;
+}

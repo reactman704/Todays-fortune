@@ -5,6 +5,7 @@ import { Header } from "./components/Header";
 import { Home } from "./components/pages/Home";
 import { About } from "./components/pages/About";
 import { Contact } from "./components/pages/Contact";
+import { GsapTest } from "./components/GsapTest";
 
 function App() {
   return (
@@ -20,6 +21,7 @@ function App() {
             <>
               <Card />
               <Home />
+              <GsapTest />
             </>
           }
         />

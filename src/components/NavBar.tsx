@@ -10,13 +10,13 @@ export const NavBar = () => {
     <nav className="nav-wrap">
       <ul className="flex-center g30">
         <li>
-          <Link to="/">Home</Link>
+          <Link to="/">Question</Link>
         </li>
         <li>
           <Link to="/about">About</Link>
         </li>
         <li>
-          <Link to="/contact">Social</Link>
+          <Link to="/contact">Contact</Link>
         </li>
       </ul>
     </nav>
