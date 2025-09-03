@@ -7,16 +7,16 @@ import "../styles/NavBar.css";
 
 export const NavBar = () => {
   return (
-    <nav>
-      <ul className="nav-wrap flex-center g30">
+    <nav className="nav-wrap">
+      <ul className="flex-center g30">
         <li>
-          <Link to="/">Menu</Link>
+          <Link to="/">Home</Link>
         </li>
         <li>
           <Link to="/about">About</Link>
         </li>
         <li>
-          <Link to="/contact">Contact</Link>
+          <Link to="/contact">Social</Link>
         </li>
       </ul>
     </nav>

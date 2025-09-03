@@ -11,11 +11,18 @@ function App() {
     <>
       <div>
         <Header />
-        <Card />
       </div>
 
       <Routes>
-        <Route path="/" element={<Home />} />
+        <Route
+          path="/"
+          element={
+            <>
+              <Card />
+              <Home />
+            </>
+          }
+        />
         <Route path="/about" element={<About />} />
         <Route path="/contact" element={<Contact />} />
       </Routes>

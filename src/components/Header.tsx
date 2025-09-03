@@ -5,7 +5,7 @@ import { NavBar } from "./NavBar";
 export const Header = () => {
   return (
     <>
-      <header>
+      <header className="header">
         <a href="/">
           <img src="/assets/Logo.png" alt="Logo" />
         </a>
